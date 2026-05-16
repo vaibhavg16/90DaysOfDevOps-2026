@@ -9,10 +9,10 @@
 ---
 
 ## 2. My Profile & Commitment
-* **Current Level:** [Student / Fresher / Working Professional / Non-IT Background]
-* **Weekly Time Budget:** * **Weekdays:** 2 hours / day
-    * **Weekends:** 4–5 hours / day
-    * **Total:** ~20 hours / week of dedicated, hands-on learning.
+* **Current Level:** Fresher
+* **Weekly Time Budget:** * **Weekdays:** 4 hours / day
+    * **Weekends:** 5–6 hours / day
+    * **Total:** ~31 hours / week of dedicated, hands-on learning.
 
 ---
 
