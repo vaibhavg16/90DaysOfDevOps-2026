@@ -9,7 +9,6 @@
 ---
 
 ## 2. My Profile & Commitment
-<<<<<<< HEAD
 * **Current Level:** Technical Support Engineer(Nov 2024 - Nov 2025). Currently Switching to DevOps.
 * **Weekly Time:** 4 Hours every day.
 
