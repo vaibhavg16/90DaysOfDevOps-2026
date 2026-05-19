@@ -61,9 +61,9 @@ dmesg | tail -20
 
 Command 9 — View service logs with journalctl
 
-journnalctl -u ssh --since "1 hour ago" --no-pager
+journnalctl -u docker --since "2026-04-03 10:00:00" --no-pager | head -10
 
-
+![journnalctl](images/journalctl.png)
 
 Command 10 — Tail a log file
 
