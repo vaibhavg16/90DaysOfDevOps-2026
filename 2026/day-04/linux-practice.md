@@ -13,7 +13,7 @@ Command 2 — Top memory-consuming processes
 
 ps aux --sort=-%mem | head -10
 
-![ps aux output](images/'ps aux --sort=-%mem.png')
+![ps aux output](images/ps_aux_mem.png')
 
 Command 3 — List processes with pgrep
 
