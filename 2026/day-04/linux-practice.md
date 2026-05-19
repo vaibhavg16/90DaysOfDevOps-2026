@@ -57,6 +57,7 @@ Command 8 — Check kernel/boot logs with dmesg
 
 dmesg | tail -20
 
+![ps aux output](images/dmesg.png)
 
 Command 9 — View service logs with journalctl
 
@@ -66,8 +67,9 @@ journnalctl -u ssh --since "1 hour ago" --no-pager
 
 Command 10 — Tail a log file
 
-tail -n 50 /var/log/syslog
+tail -n 40 /var/log/syslog
 
+![tail](images/tail.png)
 
 ----------------------------
 4. Mini Troubleshooting Flow
@@ -79,27 +81,35 @@ Step 1 — Check system load
 
 uptime
 
+![uptime](images/uptime.png)
 
 Step 2 — Check memory
 
 free -h
 
+![free](images/free.png)
+
 Step 3 — Check disk usage
 
 du -h
+![disk usage](images/du.png)
 
 Step 4 — Find which process is eating resources
 
 ps aux --sort=-%cpu | head -10
 ps aux --sort=-%mem | head -10
 
+![ps aux output](images/ps_aux.png)
 
 Step 5 — Check if the service is running
 
 systemctl status nginx
 
+![ssh nginx](images/nginx.png)
+
 Step 6 — Check recent logs for errors
 
 journalctl -u nginx --since "10 minutes ago" | grep -i error
 
+![journalctl no error](images/noerror.png)
 
