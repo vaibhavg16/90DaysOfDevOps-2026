@@ -19,13 +19,13 @@ Command 3 — List processes with pgrep
 
 pgrep -a -u root | head -10
 
-![pgrep output](images/'pgrep -a -u root.png')
+![pgrep output](images/pgrep.png)
 
 Command 4 — Check for zombie processes
 
 ps aux | awk '$8 =="Z" {print "ZOMBIE:", $0}'
 
-![ps aux output](images/'ps aux  awk '\''$8 == Z { print ZOMBIE, $0 }'\''.png')
+![ps aux output](images/ps_aux_zombie.png)
 
 -----------------
 2. Service Checks
