@@ -92,6 +92,7 @@ free -h
 Step 3 — Check disk usage
 
 du -h
+
 ![disk usage](images/du.png)
 
 Step 4 — Find which process is eating resources
