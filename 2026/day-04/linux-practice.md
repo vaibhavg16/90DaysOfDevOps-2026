@@ -7,7 +7,7 @@ Command 1 — Top CPU-consuming processes
 
 ps aux --sort=-%cpu | head -15
 
-![ps aux output](images/'ps aux --sort=-%cpu.png')
+![ps aux output](images/ps_aux_cpu.png)
 
 Command 2 — Top memory-consuming processes
 
