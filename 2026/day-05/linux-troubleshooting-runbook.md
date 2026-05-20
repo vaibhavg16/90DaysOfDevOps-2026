@@ -115,7 +115,7 @@ Reason: Core remote access service; easy to validate via network and logs.
 - Network port 22 is open and serving connections.
 - No errors in logs.
 
-##If this worsens
+## If this worsens
 
 - Check logs again
 - Check CPU usage/Disk usage
