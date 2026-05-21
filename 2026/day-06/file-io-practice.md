@@ -112,6 +112,8 @@ echo "Testing the 'tee' command" | tee -a notes.txt
 
 ## 💻 Hands-On Practice
 
+![screenshot](day06.png)
+
 ### Final state of `notes.txt` after all commands:
 
 ```bash
