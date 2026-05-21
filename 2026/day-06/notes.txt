@@ -1,0 +1,4 @@
+Hello, My name is vaibhav godse.
+I'm DevOps enthusiast.
+Today is the Day 06 of 90DaysOfDevOps challenge
+Testing the 'tee' command
