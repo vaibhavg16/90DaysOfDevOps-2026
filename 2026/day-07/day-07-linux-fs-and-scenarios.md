@@ -1,246 +1,405 @@
-# 🐧 Day 07 — Linux File System Hierarchy
+# 🐧 Day 07 — Linux File System Hierarchy & Scenario-Based Practice
 
 > **Author:** Vaibhav Godse | **Challenge:** 90DaysOfDevOps 2026
-> **Topic:** Understanding the Linux directory structure and what lives where
+> **Topics:** Linux FS Hierarchy · Service Troubleshooting · Process Monitoring · Log Analysis · File Permissions
 
 ---
 
-## Why This Matters for DevOps
+## 📑 Table of Contents
 
-In Linux, **everything is a file** — configs, logs, hardware devices, and even running processes.
-Knowing where things live saves time during deployments, debugging, and incident response.
+- [Part 1: Linux File System Hierarchy](#part-1-linux-file-system-hierarchy)
+- [Part 2: Scenario-Based Practice](#part-2-scenario-based-practice)
+  - [Scenario 1 — Service Not Starting](#scenario-1--service-not-starting)
+  - [Scenario 2 — High CPU Usage](#scenario-2--high-cpu-usage)
+  - [Scenario 3 — Finding Service Logs](#scenario-3--finding-service-logs)
+  - [Scenario 4 — Permission Denied](#scenario-4--permission-denied)
+- [Key Takeaways](#-key-takeaways)
 
 ---
 
-## 📁 The Linux File System Tree
+## Part 1: Linux File System Hierarchy
+
+> In Linux, **everything is a file** — hardware, processes, configs, logs. Understanding where things live is essential for any DevOps engineer.
 
 ```
 /
-├── boot/       → Kernel & boot files
-├── bin/        → Essential user commands
-├── sbin/       → Admin-only commands
-├── etc/        → System configuration files
-├── home/       → User home directories
-├── root/       → Root user's home
-├── usr/        → Installed applications & libraries
-├── var/        → Logs, web content, databases (changing data)
-├── tmp/        → Temporary files (wiped on reboot)
-├── dev/        → Hardware device files
-├── proc/       → Live kernel & process info
-├── sys/        → Live hardware & kernel state
-├── mnt/        → Manual mount points
-└── media/      → Auto-mounted removable devices
+├── boot/     ← kernel & boot files
+├── bin/      ← basic commands (ls, cp, echo)
+├── sbin/     ← admin commands (reboot, iptables)
+├── etc/      ← all configuration files
+├── home/     ← user home directories
+├── root/     ← root user's home
+├── usr/      ← installed programs & libraries
+├── var/      ← logs, web content, databases
+├── tmp/      ← temporary files (cleared on reboot)
+├── dev/      ← hardware devices as files
+├── proc/     ← live kernel & process info
+├── sys/      ← live hardware & driver info
+├── mnt/      ← manually mounted filesystems
+└── media/    ← auto-mounted removable drives
 ```
 
 ---
 
-## 1. Core System Folders
+### 1. Core System Folders
 
-### `/boot` — Bootloader & Kernel
-Holds everything Linux needs to start up — the kernel image, bootloader config (GRUB), and initramfs.
-
-> ⚠️ **Never delete files from `/boot`.** Without it, the system will not start.
+| Directory | Purpose |
+|-----------|---------|
+| `/boot` | Kernel and bootloader files. Deleting this = system won't boot |
+| `/bin` | Essential commands for all users — `ls`, `cd`, `cp`, `echo` |
+| `/sbin` | Admin-only commands — `reboot`, `fdisk`, `iptables` |
 
 ---
 
-### `/bin` — Essential User Commands
-Contains the basic CLI tools everyone needs — including in single-user (rescue/repair) mode.
+### 2. Configuration & User Space
+
+| Directory | Purpose |
+|-----------|---------|
+| `/etc` | All system config files — nginx, network, users, passwords |
+| `/home` | Personal folder per user (e.g., `/home/vaibhav`) — private by default |
+| `/root` | Home directory for the root user — separate from `/home` for security |
+
+> 💡 `/etc` is where you spend most of your time as a DevOps engineer — nginx config, SSH config, cron jobs, network settings all live here.
+
+---
+
+### 3. Storage, Programs & Variables
+
+| Directory | Purpose |
+|-----------|---------|
+| `/usr` | Installed programs and libraries (e.g., git, docker, python go here) |
+| `/var` | Files that grow over time — logs (`/var/log`), web files (`/var/www`), databases |
+| `/tmp` | Temporary scratch space — wiped clean on every reboot |
+
+> ⚠️ Watch `/var` disk usage in production — logs and database files grow here silently. A full `/var` will crash your services.
+
+---
+
+### 4. Hardware & System Memory
+
+| Directory | Purpose |
+|-----------|---------|
+| `/dev` | Hardware represented as files — `/dev/sda` = first hard disk, `/dev/null` = black hole |
+| `/proc` | Live kernel data — process info, CPU, memory (not real files, generated on-the-fly) |
+| `/sys` | Live hardware and driver info |
+| `/mnt` | Mount point for manually mounted drives or network shares |
+| `/media` | Auto-mounted removable devices — USB drives, SD cards |
+
+---
+
+## Part 2: Scenario-Based Practice
+
+> **Approach:** Observe → Understand → Fix → Verify. Never jump to fixes before reading the logs.
+
+---
+
+## Scenario 1 — Service Not Starting
+
+> **Problem:** A web app service called `myapp` (or `nginx`) failed to start after a server reboot.
+
+**Troubleshooting flow:**
+```
+Check status → Read full logs → Check boot config → Check port conflict → Start & watch live
+```
+
+---
+
+### Step 1 — Check service status
 
 ```bash
-ls    # lives at /bin/ls
-cp    # lives at /bin/cp
-echo  # lives at /bin/echo
+systemctl status nginx
 ```
 
-> 💡 On modern systems (Ubuntu 22.04+), `/bin` is a symlink to `/usr/bin`.
+> Always the first command. Shows state (active/failed/inactive) + last 10 log lines in one view.
+> Look for `Active: failed (Result: exit-code)` or a red dot `●`.
 
 ---
 
-### `/sbin` — System Administration Commands
-Like `/bin`, but for root-level administrative tools.
+### Step 2 — Read full service logs
 
 ```bash
-reboot    # restart the system
-fdisk     # disk partitioning
-iptables  # firewall rules
+journalctl -u nginx -n 50 --no-pager
+journalctl -u nginx --since "today" --no-pager
 ```
 
-> 💡 Regular users typically can't run these without `sudo`.
+| Flag | Meaning |
+|------|---------|
+| `-u nginx` | Filter logs for nginx.service only |
+| `-n 50` | Show last 50 lines (status only shows 10) |
+| `--no-pager` | Print directly — don't open in `less` |
+
+> Common errors you'll find here: `bind: Address already in use` (port conflict) · `No such file or directory` (missing config) · `Permission denied` (wrong file ownership)
 
 ---
 
-## 2. Configuration & User Space
-
-### `/etc` — System Configuration Files
-All system-wide configuration lives here as plain text files — easy to edit, easy to version control.
+### Step 3 — Check if service is enabled on boot
 
 ```bash
-/etc/nginx/nginx.conf       # Nginx web server config
-/etc/ssh/sshd_config        # SSH daemon config
-/etc/passwd                 # User account info
-/etc/hosts                  # Static hostname mappings
-/etc/crontab                # Scheduled tasks
+systemctl is-enabled nginx.service
 ```
 
-> 💡 **DevOps tip:** Always back up files in `/etc` before editing them:
-> ```bash
-> cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
-> ```
-
----
-
-### `/home` — User Home Directories
-Each regular user gets their own personal folder here.
-
-```
-/home/vaibhav/     ← your personal space
-/home/alice/
-/home/bob/
-```
-
-Other users cannot access your home folder without permission. Stores your documents, dotfiles (`.bashrc`, `.ssh/`), and personal settings.
-
----
-
-### `/root` — Root User's Home
-The home directory for the `root` (superuser) account. Kept separate from `/home` for security — even if `/home` is on a separate disk or gets corrupted, the admin can still log in.
-
----
-
-## 3. Programs, Applications & Variable Data
-
-### `/usr` — Installed Applications & Libraries
-When you install software (Git, Docker, Python), its files land here — not in `/bin`.
-
-```
-/usr/bin/          → executables (git, python3, docker)
-/usr/lib/          → shared libraries
-/usr/share/        → docs, icons, locale data
-/usr/local/        → manually compiled/installed software
-```
-
----
-
-### `/var` — Variable / Changing Data
-Contains files that grow or change while the system runs.
-
-```
-/var/log/           → system and application logs
-/var/log/syslog     → general system log
-/var/log/nginx/     → nginx access & error logs
-/var/www/           → web server content
-/var/lib/docker/    → Docker images and containers
-```
-
-> ⚠️ `/var` filling up (100% disk) is a common production incident — logs grow unchecked.
-> Monitor disk with `df -h` and rotate logs with `logrotate`.
-
----
-
-### `/tmp` — Temporary Files
-Programs store short-lived data here. Linux **wipes this folder on every reboot**.
-
-> 💡 Safe to use for scratch files during scripts, but never store anything important here.
-
----
-
-## 4. Hardware & Kernel Interfaces
-
-### `/dev` — Device Files
-In Linux, hardware is exposed as files. You read/write hardware by reading/writing its device file.
-
-```
-/dev/sda       → first SATA/SSD hard disk
-/dev/sda1      → first partition on that disk
-/dev/tty       → terminal
-/dev/null      → the "black hole" — discard anything written to it
-/dev/zero      → produces infinite stream of null bytes
-```
-
----
-
-### `/proc` & `/sys` — Live System Information
-Virtual filesystems — not real files on disk. The kernel writes live system state here.
+> If output is `disabled` — service was never configured to auto-start. Survives a manual start but **dies after every reboot**.
 
 ```bash
-cat /proc/cpuinfo        # CPU details
-cat /proc/meminfo        # RAM details
-cat /proc/uptime         # system uptime in seconds
-ls /proc/1234/           # everything about process PID 1234
+# Fix:
+sudo systemctl enable nginx.service
 ```
-
-> 💡 `ps`, `top`, and `htop` all read from `/proc` behind the scenes.
 
 ---
 
-### `/mnt` & `/media` — Mount Points
-
-| Directory | Usage |
-|-----------|-------|
-| `/mnt` | Manual mount points — e.g., mounting a network share or extra disk |
-| `/media` | Auto-mounted removable devices — USB drives, SD cards, DVDs |
+### Step 4 — Check for port conflicts
 
 ```bash
-# Mount an external disk manually
-sudo mount /dev/sdb1 /mnt/external
-
-# Access it
-ls /mnt/external
+ss -tulnp | grep 80
 ```
 
----
-
-## Quick Reference Table
-
-| Directory | Contains | DevOps Relevance |
-|-----------|----------|-----------------|
-| `/boot` | Kernel, bootloader | Don't touch unless upgrading kernel |
-| `/bin` | Core user commands | `ls`, `cp`, `echo`, `grep` |
-| `/sbin` | Admin commands | `reboot`, `fdisk`, `iptables` |
-| `/etc` | Config files | Edit to configure services |
-| `/home` | User data | Developer workspaces, SSH keys |
-| `/root` | Root's home | Admin files, scripts |
-| `/usr` | Installed apps | Where `apt install` puts things |
-| `/var` | Logs, web data | Monitor disk, check logs here |
-| `/tmp` | Temp files | Wiped on reboot — nothing permanent |
-| `/dev` | Device files | Disk management, `/dev/null` |
-| `/proc` | Live process info | Read by `ps`, `top`, `cat /proc/meminfo` |
-| `/sys` | Live hardware state | Kernel tuning, hardware info |
-| `/mnt` | Manual mounts | Attach extra disks, NFS shares |
-| `/media` | Auto-mounts | USB drives, removable media |
+> If another process already holds port 80, nginx cannot bind to it and fails to start. This command shows every listening port and which process owns it.
 
 ---
 
-## Commands to Explore the Filesystem
+### Step 5 — Start service and watch live
 
 ```bash
-# See the top-level structure
-ls /
+sudo systemctl start nginx.service
+journalctl -u nginx.service -f
+```
 
-# Check disk usage per directory
-du -sh /*  2>/dev/null
+> Start the service, then immediately follow logs with `-f`. You'll see the exact error the moment it occurs.
 
-# Find where a command lives
-which nginx
-which python3
+---
 
-# See what's in /etc
-ls /etc/ | head -20
+## Scenario 2 — High CPU Usage
 
-# Check your own home directory
-ls -la ~
+> **Problem:** Manager reports the server is slow. You SSH in — find the CPU hog.
 
-# View live CPU info from /proc
-cat /proc/cpuinfo | grep "model name" | head -2
-
-# View memory info from /proc
-cat /proc/meminfo | grep -E "MemTotal|MemAvailable"
-
-# List block devices (disks)
-lsblk
+**Troubleshooting flow:**
+```
+Check load → Snapshot CPU → Watch live → Inspect PID → Link to service
 ```
 
 ---
 
-> **Bottom line:** The Linux filesystem is a map.
-> The faster you can navigate it without thinking, the faster you troubleshoot in production. 🚀
+### Step 1 — Check system load
+
+```bash
+uptime
+```
+
+> Rule: load average should be ≤ `nproc` (number of CPU cores).
+> Load `4.0` on a 1-core server = overloaded. Load `4.0` on an 8-core server = fine.
+
+---
+
+### Step 2 — Find the CPU hog (snapshot)
+
+```bash
+ps aux --sort=-%cpu | head -10
+```
+
+> Sorts all processes by CPU descending. Top line = biggest consumer. **Note the PID** (column 2).
+
+---
+
+### Step 3 — Watch CPU usage live
+
+```bash
+top
+top -o %CPU
+```
+
+> Live updating view. Press `P` = sort by CPU · `M` = sort by memory · `q` = quit.
+> **Tip:** In `top`, press `k` → enter PID → enter `9` to kill a process without exiting.
+
+---
+
+### Step 4 — Inspect the specific process
+
+```bash
+ps aux | grep <PID>
+ls -l /proc/<PID>/exe
+```
+
+> `/proc/<PID>/exe` is a symlink to the exact binary being executed — useful when the process name alone is unclear.
+
+---
+
+### Step 5 — Link process to its service
+
+```bash
+systemctl status <PID>
+cat /proc/<PID>/status
+```
+
+> `systemctl` can take a PID and tell you which service unit owns it — so you know whether to restart nginx, docker, or your custom app.
+
+> ⚠️ Also check memory: `ps aux --sort=-%mem | head -10` — high swap usage can cause CPU thrashing that looks like a CPU issue but is actually RAM exhaustion.
+
+---
+
+## Scenario 3 — Finding Service Logs
+
+> **Problem:** A developer asks — *"Where are the logs for the nginx service?"*
+
+**Troubleshooting flow:**
+```
+Confirm systemd → View recent logs → Filter by time → Follow live → Search for errors
+```
+
+---
+
+### Step 1 — Confirm service is systemd-managed
+
+```bash
+systemctl status nginx.service
+```
+
+> Check the `Loaded:` line — if it shows a `.service` file path, all logs are in `journald`.
+
+---
+
+### Step 2 — View last 50 lines
+
+```bash
+journalctl -u nginx.service -n 50 --no-pager
+```
+
+---
+
+### Step 3 — Filter by time
+
+```bash
+journalctl -u nginx --since "1 hour ago" --no-pager
+journalctl -u nginx --since "today" --no-pager
+journalctl -u nginx --since "2026-05-26 10:00:00"
+```
+
+> Narrows logs to the window when the issue happened — avoids scrolling through thousands of lines.
+
+---
+
+### Step 4 — Follow logs live
+
+```bash
+journalctl -u nginx.service -f
+```
+
+> Streams new lines as they appear — exactly like `tail -f` but for systemd services. Use during deployments or restarts.
+
+---
+
+### Step 5 — Search for errors
+
+```bash
+journalctl -u nginx --since "today" | grep -i error
+journalctl -p err --since "1 hour ago" --no-pager
+```
+
+> Second command shows ERROR-level messages across **all services** — great for a quick system-wide health check.
+
+---
+
+## Scenario 4 — Permission Denied
+
+> **Problem:** Script at `/home/user/backup.sh` throws `Permission denied` when executed.
+
+**Troubleshooting flow:**
+```
+Check permissions → Understand the string → chmod +x → Verify → Run
+```
+
+---
+
+### Step 1 — Check current permissions
+
+```bash
+ls -l /home/user/backup.sh
+```
+
+**Output:**
+```
+-rw-r--r-- 1 vaibhav vaibhav 512 May 26 10:00 backup.sh
+```
+
+---
+
+### Step 2 — Understand the permission string
+
+```
+- rw- r-- r--
+│  │   │   └── others : read only
+│  │   └─────  group  : read only
+│  └─────────  owner  : read + write  (no x = not executable!)
+└────────────  file type: regular file
+```
+
+> No `x` anywhere = the file cannot be executed. That's why you get "Permission denied".
+
+---
+
+### Step 3 — Add execute permission
+
+```bash
+chmod +x /home/user/backup.sh
+# or more explicitly:
+chmod 755 /home/user/backup.sh
+```
+
+| Command | What it sets |
+|---------|-------------|
+| `chmod +x` | Adds execute for owner + group + others |
+| `chmod 755` | owner=`rwx`, group=`r-x`, others=`r-x` — standard for scripts |
+| `chmod 777` | ⚠️ NEVER in production — gives everyone write access too |
+
+---
+
+### Step 4 — Verify the change
+
+```bash
+ls -l /home/user/backup.sh
+```
+
+```
+Before:  -rw-r--r--   (no x)
+After:   -rwxr-xr-x   ✅ (x added)
+```
+
+---
+
+### Step 5 — Run the script
+
+```bash
+./backup.sh
+
+# If still failing, bypass execute bit and run directly:
+bash /home/user/backup.sh
+```
+
+> `bash backup.sh` bypasses the execute permission — useful for debugging shebang or syntax errors.
+
+---
+
+### Still getting "Permission denied" after chmod?
+
+```bash
+ls -la /home/user/     # check who owns the file
+whoami                 # check who you are
+sudo chmod +x /home/user/backup.sh   # use sudo if owned by root
+```
+
+> If the file is owned by `root` but you're logged in as `vaibhav`, you need `sudo` to change its permissions.
+
+---
+
+## 💡 Key Takeaways
+
+| Scenario | Root Cause | First Command | Fix |
+|----------|-----------|--------------|-----|
+| Service not starting | disabled / port conflict / missing config | `systemctl status` | `journalctl -u <svc>` → identify → fix |
+| High CPU | Runaway process or RAM exhaustion causing thrash | `uptime` + `ps aux --sort=-%cpu` | `systemctl status <PID>` → restart |
+| Finding logs | All systemd services log to journald | `systemctl status <svc>` | `journalctl -u <svc> -f` |
+| Permission denied | Missing execute bit (`x`) | `ls -l <file>` | `chmod +x <file>` |
+
+---
+
+> **The DevOps mindset:** Always **observe first, fix second**.
+> Read the logs before touching anything — 90% of the time, the log tells you exactly what's wrong. 🚀
