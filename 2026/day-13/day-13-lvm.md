@@ -157,19 +157,15 @@ df -h /mnt/app-data
 ```
 
 **Output:**
-```
-Filesystem                        Size  Used Avail Use% Mounted on
-/dev/mapper/devops--vg-app--data  469M   24K  434M   1% /mnt/app-data
-```
+
+![mount](images/task5.png)
 
 **Test file creation:**
 ```bash
 touch /mnt/app-data/testfile
 ls /mnt/app-data
 ```
-
-![mount](images/task5.png)
-
+![lvextend](images/task5.1.png)
 ---
 
 ## Task 6: Extend the Volume
@@ -189,16 +185,10 @@ df -h /mnt/app-data
 ```
 
 **Output:**
-```
-  Size of logical volume devops-vg/app-data changed from 500.00 MiB to 700.00 MiB.
 
-Filesystem                        Size  Used Avail Use% Mounted on
-/dev/mapper/devops--vg-app--data  671M   24K  625M   1% /mnt/app-data
-```
+![mount](images/task6.png)
 
 > `lvextend` grows the LV, but the filesystem still sees the old size. `resize2fs` is required to expand the filesystem to fill the newly available space — all while mounted and live.
-
-![lvextend](images/task6.png)
 
 ---
 
