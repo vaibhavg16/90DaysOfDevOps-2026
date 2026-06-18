@@ -1,7 +1,6 @@
 # Day 15 – Networking Concepts: DNS, IP, Subnets & Ports
 
 > **Machine:** `vaibhav@Asus-Vivobook` | Ubuntu 24.04 (WSL2)
-> Building on Day 14 — going deeper into the building blocks every DevOps engineer must know.
 
 ---
 
