@@ -27,9 +27,7 @@ add() {
 }
 
 greet "Vaibhav"
-greet "DevOps"
 add 10 20
-add 5 7
 ```
 
 ![task 1](images/task1.png)
