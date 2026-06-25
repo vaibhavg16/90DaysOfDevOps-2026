@@ -1,0 +1,30 @@
+Date of Analysis: 2026-06-25 Time: 22:13
+Name of Log File: testserver.log
+
+==========TOTAL LINES PROCESSED==========
+50
+----------Top 5 Error Messages-------------
+      4    Disk full - 
+      2    Out of memory - 
+      2    Failed to connect - 
+      1    Segmentation fault - 
+      1    Invalid input - 
+---------Total Error Counts-------------
+Total lines processed : 50
+Total errors found    : 10
+
+--------Critical Events-------------
+Line 4:2026-06-25 21:49:11 [CRITICAL]  - 31127
+Line 11:2026-06-25 21:49:11 [CRITICAL]  - 23168
+Line 15:2026-06-25 21:49:11 [CRITICAL]  - 23650
+Line 16:2026-06-25 21:49:11 [CRITICAL]  - 10791
+Line 18:2026-06-25 21:49:11 [CRITICAL]  - 4464
+Line 20:2026-06-25 21:49:11 [CRITICAL]  - 12162
+Line 21:2026-06-25 21:49:11 [CRITICAL]  - 20473
+Line 31:2026-06-25 21:49:11 [CRITICAL]  - 19995
+Line 35:2026-06-25 21:49:11 [CRITICAL]  - 22734
+Line 37:2026-06-25 21:49:11 [CRITICAL]  - 23864
+Line 40:2026-06-25 21:49:11 [CRITICAL]  - 1916
+Line 43:2026-06-25 21:49:11 [CRITICAL]  - 7413
+Line 49:2026-06-25 21:49:11 [CRITICAL]  - 29445
+
