@@ -7,30 +7,10 @@
 ## Task 1: Install and Configure Git
 
 ### Verify Git is installed
-
-```bash
-vaibhav@Asus-Vivobook:~$ git --version
-git version 2.43.0
-```
-
 ### Set up Git identity
-
-```bash
-vaibhav@Asus-Vivobook:~$ git config --global user.name "Vaibhav Godse"
-vaibhav@Asus-Vivobook:~$ git config --global user.email "vaibhav@example.com"
-vaibhav@Asus-Vivobook:~$ git config --global core.editor "vim"
-vaibhav@Asus-Vivobook:~$ git config --global init.defaultBranch main
-```
-
 ### Verify configuration
 
-```bash
-vaibhav@Asus-Vivobook:~$ git config --list
-user.name=Vaibhav Godse
-user.email=vaibhav@example.com
-core.editor=vim
-init.defaultbranch=main
-```
+![task1](images/task1.png)
 
 **Why set name and email?**
 Every commit you make is permanently stamped with your name and email — this is how Git knows who made each change. In a team project, this is how you can see "Vaibhav changed this line on Tuesday." Without it, commits would be anonymous and untraceable.
@@ -42,24 +22,9 @@ Every commit you make is permanently stamped with your name and email — this i
 ## Task 2: Create Your Git Project
 
 ### Create folder and initialize
-
-```bash
-vaibhav@Asus-Vivobook:~$ mkdir devops-git-practice
-vaibhav@Asus-Vivobook:~$ cd devops-git-practice
-vaibhav@Asus-Vivobook:~/devops-git-practice$ git init
-Initialized empty Git repository in ~/devops-git-practice/.git/
-```
-
 ### Check status — empty repo
 
-```bash
-vaibhav@Asus-Vivobook:~/devops-git-practice$ git status
-On branch main
-
-No commits yet
-
-nothing to commit (create/copy files and use "git add" to track)
-```
+![task2](images/task2.png)
 
 **Reading `git status`:**
 - `On branch main` → you're on the main branch (the default)
@@ -69,21 +34,6 @@ nothing to commit (create/copy files and use "git add" to track)
 ---
 
 ### Explore the `.git/` directory
-
-```bash
-vaibhav@Asus-Vivobook:~/devops-git-practice$ ls -la .git/
-total 40
-drwxr-xr-x 7 vaibhav vaibhav 4096 Jun 28 18:50 .
-drwxr-xr-x 3 vaibhav vaibhav 4096 Jun 28 18:49 ..
--rw-r--r-- 1 vaibhav vaibhav   21 Jun 28 18:49 HEAD
-drwxr-xr-x 2 vaibhav vaibhav 4096 Jun 28 18:49 branches
--rw-r--r-- 1 vaibhav vaibhav   92 Jun 28 18:49 config
--rw-r--r-- 1 vaibhav vaibhav   73 Jun 28 18:49 description
-drwxr-xr-x 2 vaibhav vaibhav 4096 Jun 28 18:49 hooks
-drwxr-xr-x 2 vaibhav vaibhav 4096 Jun 28 18:49 info
-drwxr-xr-x 4 vaibhav vaibhav 4096 Jun 28 18:49 objects
-drwxr-xr-x 4 vaibhav vaibhav 4096 Jun 28 18:49 refs
-```
 
 | File/Folder | What it stores |
 |---|---|
@@ -124,6 +74,8 @@ nothing added to commit but untracked files present (use "git add" to track)
 ---
 
 ## Task 4: Stage and Commit
+
+![task 4](images/task4.png)
 
 ### Stage the file
 
