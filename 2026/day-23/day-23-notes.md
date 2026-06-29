@@ -144,7 +144,7 @@ git push -u origin feature-1
 ```
 ![task3](images/task3.1.png)
 
-![task3](images/task3.2.png)
+![task3](images/taskk3.2.png)
 
 After this, visit your GitHub repo — you'll see both `main` and `feature-1` in the branch dropdown.
 
