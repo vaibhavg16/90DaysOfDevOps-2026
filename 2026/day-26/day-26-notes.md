@@ -326,7 +326,7 @@ gh issue list --state open --json number \
     | xargs -I{} gh issue close {} --comment "Closing as stale — no activity in 90 days"
 ```
 
-![Task3.5](images/task3.5.png)
+![Task3.5](images/task3..5.png)
 
 ---
 
