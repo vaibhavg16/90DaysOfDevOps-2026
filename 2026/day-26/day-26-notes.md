@@ -57,7 +57,7 @@ github.com
   - Token scopes: 'gist', 'read:org', 'repo', 'workflow'
 ```
 
-![Task1](images/task1)
+![Task1](images/task1)*
 
 ---
 
@@ -154,7 +154,7 @@ gh repo view vaibhav-godse/devops-test-repo --json name,description,isPrivate,st
 }
 ```
 
-![Task2 1,2,3](images/task2_1.2.3)
+![Task2 1,2,3](images/task2_1.2.3.png)
 
 ---
 
@@ -178,7 +178,7 @@ gh repo list --public          # only public repos
 gh repo list --private         # only private repos
 ```
 
-![Task2.4](images/task2.4)
+![Task2.4](images/task2.4.png)
 
 ---
 
