@@ -57,7 +57,7 @@ github.com
   - Token scopes: 'gist', 'read:org', 'repo', 'workflow'
 ```
 
-![Task1](images/task1)*
+![Task1](images/task1.png)*
 
 ---
 
